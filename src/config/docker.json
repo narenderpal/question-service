@@ -1,0 +1,4 @@
+{
+  "question.service.http.address": "question-service",
+  "question.service.http.port": 8090
+}
