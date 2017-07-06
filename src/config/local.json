@@ -1,4 +1,6 @@
 {
   "question.service.http.address": "0.0.0.0",
-  "question.service.http.port": 8090
+  "question.service.http.port": 8090,
+  "mongo_uri": "mongodb://localhost:27017",
+  "mongo_db" : "cmad"
 }
