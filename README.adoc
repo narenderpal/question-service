@@ -12,11 +12,9 @@
 
 Run `redeploy.sh` (or `redeploy.bat` on Windows) and the project recompiles while editing.
 
-NOTE: the `redeploy` script are also configurable
-
 == Building the project
 
-To build the project, just use:
+To build the project:
 
 ----
 mvn clean package
