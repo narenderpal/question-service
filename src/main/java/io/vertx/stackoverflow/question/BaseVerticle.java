@@ -48,6 +48,7 @@ public class BaseVerticle extends AbstractVerticle {
     );
   }
 
+  /* TODO : remove commented code
   protected Future<Void> publishHttpEndpoint(String name, String host, int port) {
     Record record = HttpEndpoint.createRecord(name, host, port, "/",
       new JsonObject().put("api.name", config().getString("api.name", ""))
@@ -58,7 +59,7 @@ public class BaseVerticle extends AbstractVerticle {
   protected Future<Void> publishEventBusService(String name, String address, Class serviceClass) {
     Record record = EventBusService.createRecord(name, address, serviceClass);
     return publish(record);
-  }
+  }*/
 
   /**
    * Publish a service with record.
