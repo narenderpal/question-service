@@ -50,7 +50,7 @@ public class QuestionAPIVerticle extends BaseVerticle {
 
     // http server host and port
     String host = config().getString("question.service.http.address", "0.0.0.0");
-    int port = config().getInteger("question.service.http.port", 8090);
+    int port = config().getInteger("question.service.http.port", 8080);
 
     // create HTTP server and publish REST service
     // TODO : Just create and start http server... for cloud deployment service discovery and publish endpoint is not needed
