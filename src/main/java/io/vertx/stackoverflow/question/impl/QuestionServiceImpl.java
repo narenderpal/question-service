@@ -82,6 +82,22 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
+  public void deleteQuestion(String id, Handler<AsyncResult<JsonObject>> resultHandler) {
+    System.out.println("Entered deleteUser " + id);
+
+    JsonObject query = new JsonObject().put("_id", id);
+    mongoClient.removeDocument(COLLECTION, query,
+      asyncResult -> {
+        if (asyncResult.succeeded()) {
+            System.out.println("Question deleted successfully :" + id);
+            resultHandler.handle(Future.succeededFuture());
+        } else {
+          resultHandler.handle(Future.failedFuture(asyncResult.cause()));
+        }
+      });
+  }
+
+  @Override
   public void retrieveAllQuestions(Handler<AsyncResult<List<JsonObject>>> resultHandler) {
     System.out.println("start retrieveAllQuestions...");
     mongoClient.find(COLLECTION, new JsonObject(),

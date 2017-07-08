@@ -19,11 +19,13 @@ public class QuestionAPIVerticle extends BaseVerticle {
 
   private static final String ADD_QUESTION = "/question";
   private static final String RETRIEVE_QUESTION = "/question/:id";
+  private static final String DELETE_QUESTION = "/question:id";
   private static final String RETRIEVE_ALL_QUESTIONS = "/question";
   private static final String ADD_ANSWER = "/question/:id/answer";
   private static final String UPDATE_ANSWER = "/question/:qid/answer/:aid";
   private static final String VOTE_QUESTION = "/question/:id/vote";
   private static final String VOTE_ANSWER = "/question/:qid/answer/:aid/vote";
+
 
   private final QuestionService service;
 
@@ -42,6 +44,7 @@ public class QuestionAPIVerticle extends BaseVerticle {
     //add api route handler
     router.post(ADD_QUESTION).handler(this:: addQuestion);
     router.get(RETRIEVE_QUESTION).handler(this:: retrieveQuestion);
+    router.delete(DELETE_QUESTION).handler(this:: deleteQuestion);
     router.get(RETRIEVE_ALL_QUESTIONS).handler(this:: retrieveAllQuestions);
     router.post(ADD_ANSWER).handler(this:: addAnswer);
     router.put(UPDATE_ANSWER).handler(this:: updateAnswer);
@@ -94,6 +97,11 @@ public class QuestionAPIVerticle extends BaseVerticle {
   private void retrieveQuestion(RoutingContext context) {
     String id = context.request().getParam("id");
     service.retrieveQuestion(id, resultHandlerNonEmpty(context));
+  }
+
+  private void deleteQuestion(RoutingContext context) {
+    String id = context.request().getParam("id");
+    service.deleteQuestion(id, resultHandlerNonEmpty(context));
   }
 
   private void retrieveAllQuestions(RoutingContext context) {
