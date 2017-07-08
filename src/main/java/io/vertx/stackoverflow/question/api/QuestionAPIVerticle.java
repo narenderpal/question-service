@@ -19,7 +19,7 @@ public class QuestionAPIVerticle extends BaseVerticle {
 
   private static final String ADD_QUESTION = "/question";
   private static final String RETRIEVE_QUESTION = "/question/:id";
-  private static final String DELETE_QUESTION = "/question:id";
+  private static final String DELETE_QUESTION = "/question/:id";
   private static final String RETRIEVE_ALL_QUESTIONS = "/question";
   private static final String ADD_ANSWER = "/question/:id/answer";
   private static final String UPDATE_ANSWER = "/question/:qid/answer/:aid";
