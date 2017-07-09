@@ -15,8 +15,8 @@ public interface QuestionService {
   void retrieveQuestion(String id, Handler<AsyncResult<JsonObject>> resultHandler);
   void deleteQuestion(String id, Handler<AsyncResult<JsonObject>> resultHandler);
   void retrieveAllQuestions(Handler<AsyncResult<List<JsonObject>>> resultHandler);
-  void addAnswer(String questionId, JsonObject answer, Handler<AsyncResult<Void>> resultHandler);
-  void updateAnswer(String questionId,  JsonObject answer, Handler<AsyncResult<Void>> resultHandler);
-  void voteQuestion(String questionId, Integer vote, Handler<AsyncResult<Void>> resultHandler);
-  void voteAnswer(String questionId, String answerId, Integer vote, Handler<AsyncResult<Void>> resultHandler);
+  void addAnswer(String questionId, JsonObject answer, Handler<AsyncResult<JsonObject>> resultHandler);
+  void updateAnswer(String questionId,  JsonObject answer, Handler<AsyncResult<JsonObject>> resultHandler);
+  void voteQuestion(String questionId, Integer vote, Handler<AsyncResult<JsonObject>> resultHandler);
+  void voteAnswer(String questionId, String answerId, Integer vote, Handler<AsyncResult<JsonObject>> resultHandler);
 }

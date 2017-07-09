@@ -27,13 +27,13 @@ public class QuestionServiceImpl implements QuestionService {
     String uri = config.getString("mongo_uri");
     if (uri == null) {
       // running locally using local mongo db
-      //uri = "mongodb://localhost:27017";
+      uri = "mongodb://localhost:27017";
 
       // using mongo db docker container
       //uri = "mongodb://mongo:27017";
 
       // Use mongo db as a cloud service
-      uri = "mongodb://10.128.0.6:27017";
+      // uri = "mongodb://10.128.0.6:27017";
     }
     String dbName = config.getString("mongo_db");
     if (dbName == null) {
@@ -64,14 +64,14 @@ public class QuestionServiceImpl implements QuestionService {
   public void retrieveQuestion(String id, Handler<AsyncResult<JsonObject>> resultHandler) {
 
     JsonObject query = new JsonObject().put("_id", id);
-    mongoClient.findOne(COLLECTION, query, null,
+    mongoClient.findOne(COLLECTION, query, new JsonObject(),
       asyncResult -> {
         if (asyncResult.succeeded()) {
           if (asyncResult.result() != null) {
             JsonObject question = asyncResult.result();
             System.out.println("retrieveQuestion :" + question.toString());
 
-            resultHandler.handle(Future.succeededFuture());
+            resultHandler.handle(Future.succeededFuture(question));
           } else {
             System.out.println("retrieveQuestion result is empty:");
           }
@@ -84,13 +84,14 @@ public class QuestionServiceImpl implements QuestionService {
   @Override
   public void deleteQuestion(String id, Handler<AsyncResult<JsonObject>> resultHandler) {
     System.out.println("Entered deleteUser " + id);
-    // TODO : check why api returns 404 "message": "not_found" even after deleting question
     JsonObject query = new JsonObject().put("_id", id);
     mongoClient.removeDocument(COLLECTION, query,
       asyncResult -> {
         if (asyncResult.succeeded()) {
             System.out.println("Question deleted successfully :" + id);
-            resultHandler.handle(Future.succeededFuture());
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.put("Question deleted successfully, _id:", id);
+            resultHandler.handle(Future.succeededFuture(jsonResponse));
         } else {
           resultHandler.handle(Future.failedFuture(asyncResult.cause()));
         }
@@ -119,7 +120,7 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public void addAnswer(String questionId, JsonObject answerJson, Handler<AsyncResult<Void>> resultHandler) {
+  public void addAnswer(String questionId, JsonObject answerJson, Handler<AsyncResult<JsonObject>> resultHandler) {
 
     JsonObject query = new JsonObject().put("_id", questionId);
     JsonObject update = new JsonObject().put("$push", new JsonObject()
@@ -128,7 +129,7 @@ public class QuestionServiceImpl implements QuestionService {
     mongoClient.findOneAndUpdate(COLLECTION, query, update,
       asyncResult -> {
         if (asyncResult.succeeded()) {
-          resultHandler.handle(Future.succeededFuture());
+          resultHandler.handle(Future.succeededFuture(update));
         } else {
           resultHandler.handle(Future.failedFuture(asyncResult.cause()));
         }
@@ -137,7 +138,7 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public void updateAnswer(String questionId, JsonObject answerJson, Handler<AsyncResult<Void>> resultHandler) {
+  public void updateAnswer(String questionId, JsonObject answerJson, Handler<AsyncResult<JsonObject>> resultHandler) {
 
     JsonObject query = new JsonObject().put("_id", questionId);
     JsonObject update = new JsonObject().put("$push", new JsonObject()
@@ -146,7 +147,7 @@ public class QuestionServiceImpl implements QuestionService {
     mongoClient.findOneAndUpdate(COLLECTION, query, update,
       asyncResult -> {
         if (asyncResult.succeeded()) {
-          resultHandler.handle(Future.succeededFuture());
+          resultHandler.handle(Future.succeededFuture(update));
         } else {
           resultHandler.handle(Future.failedFuture(asyncResult.cause()));
         }
@@ -155,7 +156,7 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public void voteQuestion(String questionId, Integer vote, Handler<AsyncResult<Void>> resultHandler) {
+  public void voteQuestion(String questionId, Integer vote, Handler<AsyncResult<JsonObject>> resultHandler) {
     JsonObject query = new JsonObject().put("_id", questionId);
     mongoClient.findOne(COLLECTION, query, null,
       asyncResult -> {
@@ -185,9 +186,9 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public void voteAnswer(String questionId, String answerId, Integer vote, Handler<AsyncResult<Void>> resultHandler) {
+  public void voteAnswer(String questionId, String answerId, Integer vote, Handler<AsyncResult<JsonObject>> resultHandler) {
     JsonObject query = new JsonObject().put("_id", questionId);
-    mongoClient.findOne(COLLECTION, query, null,
+    mongoClient.findOne(COLLECTION, query, new JsonObject(),
       asyncResult -> {
         if (asyncResult.succeeded()) {
           if (asyncResult.result() == null) {

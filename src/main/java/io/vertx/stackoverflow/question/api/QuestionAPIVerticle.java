@@ -97,11 +97,13 @@ public class QuestionAPIVerticle extends BaseVerticle {
   }
 
   private void retrieveQuestion(RoutingContext context) {
+    System.out.println("received req  retrieveQuestion...");
     String id = context.request().getParam("id");
     service.retrieveQuestion(id, resultHandlerNonEmpty(context));
   }
 
   private void deleteQuestion(RoutingContext context) {
+    System.out.println("received req  deleteQuestion...");
     String id = context.request().getParam("id");
     service.deleteQuestion(id, resultHandlerNonEmpty(context));
   }
@@ -122,7 +124,7 @@ public class QuestionAPIVerticle extends BaseVerticle {
 
    if (answerJson != null) {
       JsonObject result = new JsonObject().put("message", "Answer for a question added successfully");
-      service.addAnswer(id, answerJson, resultVoidHandler(context, result));
+      service.addAnswer(id, answerJson, resultHandlerNonEmpty(context));
     } else {
       badRequest(context, new IllegalStateException("Answer is not valid"));
     }
@@ -142,7 +144,7 @@ public class QuestionAPIVerticle extends BaseVerticle {
 
     if (answerJson != null) {
       JsonObject result = new JsonObject().put("message", "Answer for a question updated successfully");
-      service.updateAnswer(qid, answerJson, resultVoidHandler(context, result));
+      service.updateAnswer(qid, answerJson, resultHandlerNonEmpty(context));
     } else {
       badRequest(context, new IllegalStateException("Answer is not valid"));
     }
@@ -161,7 +163,7 @@ public class QuestionAPIVerticle extends BaseVerticle {
 
     if (vote != null) {
       JsonObject result = new JsonObject().put("message", "Vote for answer updated successfully");
-      service.voteAnswer(qid, aid, vote, resultVoidHandler(context, result));
+      service.voteAnswer(qid, aid, vote, resultHandlerNonEmpty(context));
     } else {
       badRequest(context, new IllegalStateException("Answer is not valid"));
     }
@@ -177,7 +179,7 @@ public class QuestionAPIVerticle extends BaseVerticle {
 
     if (vote != null) {
       JsonObject result = new JsonObject().put("message", "Vote for question updated successfully");
-      service.voteQuestion(qid, vote, resultVoidHandler(context, result));
+      service.voteQuestion(qid, vote, resultHandlerNonEmpty(context));
     } else {
       badRequest(context, new IllegalStateException("Request is not valid"));
     }
