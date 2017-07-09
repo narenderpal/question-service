@@ -84,7 +84,7 @@ public class QuestionServiceImpl implements QuestionService {
   @Override
   public void deleteQuestion(String id, Handler<AsyncResult<JsonObject>> resultHandler) {
     System.out.println("Entered deleteUser " + id);
-
+    // TODO : check why api returns 404 "message": "not_found" even after deleting question
     JsonObject query = new JsonObject().put("_id", id);
     mongoClient.removeDocument(COLLECTION, query,
       asyncResult -> {

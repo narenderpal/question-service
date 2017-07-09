@@ -40,6 +40,8 @@ public class QuestionAPIVerticle extends BaseVerticle {
     final Router router = Router.router(vertx);
     // add body handler
     router.route().handler(BodyHandler.create());
+    // cors handler
+    addCorsHandler(router);
 
     //add api route handler
     router.post(ADD_QUESTION).handler(this:: addQuestion);

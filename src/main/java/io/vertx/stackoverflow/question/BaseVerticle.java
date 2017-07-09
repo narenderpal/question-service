@@ -1,6 +1,7 @@
 package io.vertx.stackoverflow.question;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -9,15 +10,16 @@ import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.impl.ConcurrentHashSet;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.servicediscovery.Record;
 import io.vertx.servicediscovery.ServiceDiscovery;
 import io.vertx.servicediscovery.ServiceDiscoveryOptions;
-import io.vertx.servicediscovery.types.EventBusService;
-import io.vertx.servicediscovery.types.HttpEndpoint;
 
 /**
  * Created by napal on 25/06/17.
@@ -47,19 +49,6 @@ public class BaseVerticle extends AbstractVerticle {
         .setResetTimeout(cbOptions.getLong("reset-timeout", 30000L))
     );
   }
-
-  /* TODO : remove commented code
-  protected Future<Void> publishHttpEndpoint(String name, String host, int port) {
-    Record record = HttpEndpoint.createRecord(name, host, port, "/",
-      new JsonObject().put("api.name", config().getString("api.name", ""))
-    );
-    return publish(record);
-  }
-
-  protected Future<Void> publishEventBusService(String name, String address, Class serviceClass) {
-    Record record = EventBusService.createRecord(name, address, serviceClass);
-    return publish(record);
-  }*/
 
   /**
    * Publish a service with record.
@@ -115,6 +104,33 @@ public class BaseVerticle extends AbstractVerticle {
           }
         });
     }
+  }
+
+  protected void addCorsHandler(Router router) {
+    router.route().handler(CorsHandler.create("*")
+      .allowedHeaders(allowedHeaders())
+      .allowedMethods(allowedMethods()));
+  }
+
+  private Set<String> allowedHeaders() {
+    Set<String> allowHeaders = new HashSet<>();
+    allowHeaders.add("x-requested-with");
+    allowHeaders.add("Access-Control-Allow-Origin");
+    allowHeaders.add("origin");
+    allowHeaders.add("Content-Type");
+    allowHeaders.add("accept");
+    return allowHeaders;
+  }
+
+  private Set<HttpMethod> allowedMethods() {
+    Set<HttpMethod> allowMethods = new HashSet<>();
+    allowMethods.add(HttpMethod.GET);
+    allowMethods.add(HttpMethod.PUT);
+    allowMethods.add(HttpMethod.OPTIONS);
+    allowMethods.add(HttpMethod.POST);
+    allowMethods.add(HttpMethod.DELETE);
+    allowMethods.add(HttpMethod.PATCH);
+    return allowMethods;
   }
 
 }
