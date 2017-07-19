@@ -48,11 +48,17 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public void addQuestion(JsonObject jsonObject, Handler<AsyncResult<Void>> resultHandler) {
+  public void addQuestion(JsonObject jsonObject, Handler<AsyncResult<JsonObject>> resultHandler) {
     mongoClient.save(COLLECTION, jsonObject,
       asyncResult -> {
         if (asyncResult.succeeded()) {
-          resultHandler.handle(Future.succeededFuture());
+          if (asyncResult.result() != null) {
+            System.out.println("Added Question with id:" + asyncResult.result());
+            JsonObject jsonResponse = new JsonObject().put("_id", asyncResult.result());;
+            resultHandler.handle(Future.succeededFuture(jsonResponse));
+        } else {
+            System.out.println("retrieveQuestion result is empty:");
+          }
         } else {
           resultHandler.handle(Future.failedFuture(asyncResult.cause()));
         }
@@ -129,7 +135,8 @@ public class QuestionServiceImpl implements QuestionService {
     mongoClient.findOneAndUpdate(COLLECTION, query, update,
       asyncResult -> {
         if (asyncResult.succeeded()) {
-          resultHandler.handle(Future.succeededFuture(update));
+          JsonObject answerId = new JsonObject().put("_id", answerJson.getValue("_id"));
+          resultHandler.handle(Future.succeededFuture(answerId));
         } else {
           resultHandler.handle(Future.failedFuture(asyncResult.cause()));
         }

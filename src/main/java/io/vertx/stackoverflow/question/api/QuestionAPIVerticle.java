@@ -89,8 +89,7 @@ public class QuestionAPIVerticle extends BaseVerticle {
     System.out.println("body:" + context.getBodyAsJson().toString());
     JsonObject jsonObject = context.getBodyAsJson();
     if (jsonObject != null) {
-      JsonObject result = new JsonObject().put("message", "question added successfully");
-      service.addQuestion(jsonObject, resultVoidHandler(context, result));
+      service.addQuestion(jsonObject, resultHandlerNonEmpty(context));
     } else {
       badRequest(context, new IllegalStateException("Question is not valid"));
     }
