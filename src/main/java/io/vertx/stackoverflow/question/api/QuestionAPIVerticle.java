@@ -20,6 +20,7 @@ public class QuestionAPIVerticle extends BaseVerticle {
   private static final String ADD_QUESTION = "/question";
   private static final String RETRIEVE_QUESTION = "/question/:id";
   private static final String DELETE_QUESTION = "/question/:id";
+  private static final String UPDATE_QUESTION = "/question/:id";
   private static final String RETRIEVE_ALL_QUESTIONS = "/question";
   private static final String ADD_ANSWER = "/question/:id/answer";
   private static final String UPDATE_ANSWER = "/question/:qid/answer/:aid";
@@ -47,6 +48,7 @@ public class QuestionAPIVerticle extends BaseVerticle {
     router.post(ADD_QUESTION).handler(this:: addQuestion);
     router.get(RETRIEVE_QUESTION).handler(this:: retrieveQuestion);
     router.delete(DELETE_QUESTION).handler(this:: deleteQuestion);
+    router.put(UPDATE_QUESTION).handler(this:: updateQuestion);
     router.get(RETRIEVE_ALL_QUESTIONS).handler(this:: retrieveAllQuestions);
     router.post(ADD_ANSWER).handler(this:: addAnswer);
     router.put(UPDATE_ANSWER).handler(this:: updateAnswer);
@@ -92,6 +94,17 @@ public class QuestionAPIVerticle extends BaseVerticle {
       service.addQuestion(jsonObject, resultHandlerNonEmpty(context));
     } else {
       badRequest(context, new IllegalStateException("Question is not valid"));
+    }
+  }
+
+  private void updateQuestion(RoutingContext context) {
+    String id = context.pathParams().get("id");
+    System.out.println("body:" + context.getBodyAsJson().toString());
+    JsonObject questionJson = context.getBodyAsJson();
+    if (questionJson != null) {
+      service.updateQuestion(id, questionJson, resultHandlerNonEmpty(context));
+    } else {
+      badRequest(context, new IllegalStateException("Invalid update question request"));
     }
   }
 

@@ -105,6 +105,22 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
+  public void updateQuestion(String questionId, JsonObject questionJson, Handler<AsyncResult<JsonObject>> resultHandler) {
+    System.out.println("start updateQuestion...");
+    JsonObject query = new JsonObject().put("_id", questionId);
+    JsonObject update = new JsonObject().put("$set", questionJson);
+    mongoClient.findOneAndUpdate(COLLECTION, query, update,
+      asyncResult -> {
+        if (asyncResult.succeeded()) {
+          resultHandler.handle(Future.succeededFuture(asyncResult.result()));
+        } else {
+          resultHandler.handle(Future.failedFuture(asyncResult.cause()));
+        }
+      }
+    );
+  }
+
+  @Override
   public void retrieveAllQuestions(Handler<AsyncResult<List<JsonObject>>> resultHandler) {
     System.out.println("start retrieveAllQuestions...");
     mongoClient.find(COLLECTION, new JsonObject(),
